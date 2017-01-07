@@ -16,14 +16,32 @@ class LikeableContentController < ApplicationController
   end
 
   def create
-    @content = current_user.likeable_contents.create(content_params)
+    content = current_user.likeable_contents.create(content_params)
 
-    if @content.save
+    if content.save
       flash[:success] = 'Content Saved'
-      redirect_to likeable_content_path(@content)
+      redirect_to likeable_content_path(content)
     else
       flash.now[:error] = 'Content Not Saved'
       render :new
+    end
+  end
+
+  def update
+    content = LikeableContent.find(params[:id])
+
+    unless authorised_content(content)
+      content = nil
+      flash[:error] = 'Content Does Not Exist'
+      redirect_to dashboard_index_path and return
+    end
+
+    if content.update_attributes(content_params)
+      flash[:success] = 'Content Updated'
+      redirect_to likeable_content_path(content)
+    else
+      flash[:error] = 'Content Not Updated'
+      render :edit
     end
   end
 
