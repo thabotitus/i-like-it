@@ -9,7 +9,7 @@ RSpec.describe LikeableContentController, type: :controller do
 
     it 'renders successfully' do
       get :new
-      expect(response.status).to eq(200)
+      expect(response.status).to eq 200
     end
 
     it 'initializes new likeable content object' do
@@ -26,7 +26,7 @@ RSpec.describe LikeableContentController, type: :controller do
 
       get :show, params: { id: content._id }
 
-      expect(response.status).to eq(200)
+      expect(response.status).to eq 200
     end
 
     it 'does not show content that does not belong to you' do
@@ -40,9 +40,9 @@ RSpec.describe LikeableContentController, type: :controller do
 
       get :show, params: { id: content2._id }
 
-      expect(response.status).to eq(302)
+      expect(response.status).to eq 302
       expect(response).to redirect_to dashboard_index_path
-      expect(flash[:error]).to eq('Page Does Not Exist')
+      expect(flash[:error]).to eq 'Page Does Not Exist'
       expect(assigns(:content)).to be_nil
     end
   end
@@ -57,8 +57,8 @@ RSpec.describe LikeableContentController, type: :controller do
 
       post :create, params: { likeable_content: content }
 
-      expect(LikeableContent.count).to eq(1)
-      expect(LikeableContent.first.user).to eq(@user)
+      expect(LikeableContent.count).to eq 1
+      expect(LikeableContent.first.user).to eq @user
     end
 
     it 'renders the show page after create' do
@@ -67,8 +67,8 @@ RSpec.describe LikeableContentController, type: :controller do
       post :create, params: { likeable_content: content }
 
       new_content = LikeableContent.first
-      expect(response).to redirect_to (likeable_content_path(new_content))
-      expect(flash[:success]).to eq('Content Saved')
+      expect(response).to redirect_to  likeable_content_path(new_content)
+      expect(flash[:success]).to eq 'Content Saved'
     end
 
     it 'does not redirect if the content wasnt saved' do
@@ -76,8 +76,51 @@ RSpec.describe LikeableContentController, type: :controller do
 
       post :create, params: { likeable_content: content }
 
-      expect(response.status).to eq (200)
-      expect(flash[:error]).to eq('Content Not Saved')
+      expect(response.status).to eq 200
+      expect(flash[:error]).to eq 'Content Not Saved'
+    end
+  end
+
+  describe "PUT #update" do
+    before(:each) do
+      sign_in_valid_user
+    end
+
+    it 'updates the content' do
+      content = @user.likeable_contents.create(title: 'My Content')
+      new_attributes = { title: "My New Content Title", description: "An actual description"}
+
+      put :update, params: { id: content.id, likeable_content: new_attributes }
+
+      content.reload
+      expect(content.title).to eq 'My New Content Title'
+      expect(content.description).to eq 'An actual description'
+      expect(flash[:success]).to eq 'Content Updated'
+      expect(response).to redirect_to likeable_content_path(content)
+    end
+
+    it 'does not update another users content' do
+      user2 = User.create(valid_user(email: 'anotherone@ilikeit.io'))
+      content = @user.likeable_contents.create(title: 'My Content')
+      content2 = user2.likeable_contents.create(title: 'My Other Content')
+
+      new_attributes = { title: "My New Content Title", description: "An actual description"}
+
+      put :update, params: { id: content2.id, likeable_content: new_attributes }
+      content2.reload
+      expect(content2.title).to eq 'My Other Content'
+      expect(response).to redirect_to dashboard_index_path
+      expect(flash[:error]).to eq 'Content Does Not Exist'
+    end
+
+    it 'does not redirect if content is not saved' do
+      content = @user.likeable_contents.create(title: 'My Content')
+      new_attributes = { title: nil }
+
+      put :update, params: { id: content.id, likeable_content: new_attributes }
+
+      expect(response.status).to eq 200
+      expect(flash[:error]).to eq 'Content Not Updated'
     end
   end
 
