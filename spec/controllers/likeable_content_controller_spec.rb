@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe LikeableContentController, type: :controller do
-  describe "#new" do
+
+  describe "GET #new" do
     before(:each) do
       sign_in_valid_user
     end
@@ -17,7 +18,7 @@ RSpec.describe LikeableContentController, type: :controller do
     end
   end
 
-  describe "#show" do
+  describe "GET #show" do
     it 'renders successfully' do
       user = User.create(valid_user)
       content = user.likeable_contents.create(title: 'My content')
@@ -46,11 +47,45 @@ RSpec.describe LikeableContentController, type: :controller do
     end
   end
 
+  describe "POST #create" do
+    before(:each) do
+      sign_in_valid_user
+    end
+
+    it 'saves a new likeable content' do
+      content = { title: 'My Content' }
+
+      post :create, params: { likeable_content: content }
+
+      expect(LikeableContent.count).to eq(1)
+      expect(LikeableContent.first.user).to eq(@user)
+    end
+
+    it 'renders the show page after create' do
+      content = { title: 'My Content' }
+
+      post :create, params: { likeable_content: content }
+
+      new_content = LikeableContent.first
+      expect(response).to redirect_to (likeable_content_path(new_content))
+      expect(flash[:success]).to eq('Content Saved')
+    end
+
+    it 'does not redirect if the content wasnt saved' do
+      content = { title: nil }
+
+      post :create, params: { likeable_content: content }
+
+      expect(response.status).to eq (200)
+      expect(flash[:error]).to eq('Content Not Saved')
+    end
+  end
+
   private
 
   def sign_in_valid_user
-    user = User.create(valid_user)
-    sign_in user
+    @user = User.create(valid_user)
+    sign_in @user
   end
 
   def valid_user(attr = {})

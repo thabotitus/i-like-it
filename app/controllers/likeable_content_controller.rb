@@ -15,6 +15,18 @@ class LikeableContentController < ApplicationController
     end
   end
 
+  def create
+    @content = current_user.likeable_contents.create(content_params)
+
+    if @content.save
+      flash[:success] = 'Content Saved'
+      redirect_to likeable_content_path(@content)
+    else
+      flash.now[:error] = 'Content Not Saved'
+      render :new
+    end
+  end
+
   private
 
   def content_params
