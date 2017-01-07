@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   root 'home#index'
 
   resources :dashboard, only: [:index]
-  resources :likeable_content, only: [:show, :new]
+  resources :likeable_content
 
   devise_for :users, controllers: {
     sessions: 'user/sessions',
