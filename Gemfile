@@ -38,6 +38,7 @@ group :development, :test do
     gem lib, :git => "https://github.com/rspec/#{lib}.git", :branch => 'master'
   end
   gem 'database_cleaner'
+  gem 'rails-controller-testing'
 end
 
 group :development do
