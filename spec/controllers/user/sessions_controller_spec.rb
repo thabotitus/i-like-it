@@ -13,15 +13,15 @@ RSpec.describe User::SessionsController, :type => :controller do
 
     it 'signs in a user' do
       user = User.create(valid_user)
-      get :new
       sign_in user
+      get :new
       expect(controller.user_signed_in?).to eq(true)
     end
 
     it 'signs out a user' do
       user = User.create(valid_user)
-      get :new
       sign_in user
+      get :new
       sign_out user
       expect(controller.user_signed_in?).to eq(false)
     end
