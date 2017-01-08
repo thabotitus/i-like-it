@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   }
 
   namespace :api do
-    get 'total_likes/:id/:api_token', to: 'api#total_likes'
+    get 'total_likes/:identifier/:api_token', to: 'api#total_likes'
+    post 'likes/:identifier/:api_token', to: 'api#create_like'
   end
 end
