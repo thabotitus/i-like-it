@@ -8,22 +8,32 @@ describe LikeableContent, type: :model do
 
   it 'does not need a description' do
     user = User.create(valid_user)
-    content = LikeableContent.new(title: 'card', description: '', identifier: "string", user: user)
+    content = user.likeable_contents.create(title: 'card')
     expect(content.valid?).to eq(true)
   end
 
   context '#identifier' do
     it 'has a unique identifier' do
       user = User.create(valid_user)
-      content = LikeableContent.create(title: 'card', user: user)
+      content = user.likeable_contents.create(title: 'card')
       expect(content.valid?).to eq(true)
     end
 
     it 'has a string value' do
       stub_unique_identifier
       user = User.create(valid_user)
-      content = LikeableContent.create(title: 'card', user: user)
+      content = user.likeable_contents.create(title: 'card')
       expect(content.identifier).to eq('unique-indentifier')
+    end
+  end
+
+  context '#likes' do
+    it 'has likes' do
+      user = User.create(valid_user)
+      content = user.likeable_contents.create(title: 'My Content')
+      content.likes.create
+
+      expect(content.likes.count).to eq 1
     end
   end
 

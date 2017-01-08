@@ -6,6 +6,8 @@ class User
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  before_create :generate_access_token
+
   ## Database authenticatable
   field :email,                       type: String, default: ""
   field :encrypted_password,          type: String, default: ""
@@ -38,9 +40,21 @@ class User
   ## General
   field :first_name,                  type: String
   field :last_name,                   type: String
+  field :api_token,                   type: String
 
   has_many :likeable_contents
 
   validates :first_name, presence: true
   validates :last_name, presence: true
+
+
+  def self.find_by_api_token(token)
+    where(api_token: token).first
+  end
+
+  private
+
+  def generate_access_token
+    self.api_token = Digest::SHA256.hexdigest(Time.now.to_s)
+  end
 end

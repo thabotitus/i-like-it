@@ -21,6 +21,12 @@ RSpec.describe User, type: :model do
     expect(user.valid?).to eq(false)
   end
 
+  it 'has an api token' do
+    allow(Digest::SHA256).to receive(:hexdigest).and_return('unique-token')
+    user = User.create(valid_user)
+    expect(user.api_token).to eq('unique-token')
+  end
+
   it 'can create likeable content' do
     user = User.create(valid_user)
     content = user.likeable_contents.create

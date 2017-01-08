@@ -9,6 +9,7 @@ class LikeableContent
   before_create :create_unique_identifier
 
   belongs_to :user
+  embeds_many :likes
 
   validates :title, presence: true
 
