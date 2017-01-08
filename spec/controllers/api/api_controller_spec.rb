@@ -8,7 +8,7 @@ RSpec.describe Api::ApiController, type: :controller do
       content = user.likeable_contents.create(valid_content)
       content.likes.create
 
-      get :total_likes, params: {id: content.id, api_token: user.api_token}
+      get :total_likes, params: {identifier: content.identifier, api_token: user.api_token}
 
       payload = JSON.parse response.body
       expect(payload['total_likes']).to eq 1
@@ -18,7 +18,7 @@ RSpec.describe Api::ApiController, type: :controller do
       user = User.create(valid_user)
       content = user.likeable_contents.create(valid_content)
 
-      get :total_likes, params: {id: content.id, api_token: 'invalid-token'}
+      get :total_likes, params: {identifier: content.identifier, api_token: 'invalid-token'}
 
       payload = JSON.parse response.body
       expect(response.status).to eq 404
@@ -29,7 +29,42 @@ RSpec.describe Api::ApiController, type: :controller do
       user = User.create(valid_user)
       content = user.likeable_contents.create(valid_content)
 
-      get :total_likes, params: {id: 1, api_token: user.api_token}
+      get :total_likes, params: {identifier: 'foo', api_token: user.api_token}
+
+      payload = JSON.parse response.body
+      expect(response.status).to eq 404
+      expect(payload['error']).to eq 'Invalid Request Data'
+    end
+  end
+
+  describe "POST #create_like" do
+    it 'validates the api token' do
+      user = User.create(valid_user)
+      content = user.likeable_contents.create(valid_content)
+      current_count = content.likes.count
+
+      get :create_like, params: {identifier: content.identifier, api_token: user.api_token}
+
+      payload = JSON.parse response.body
+      expect(payload['total_likes']).to eq current_count + 1
+    end
+
+    it 'returns 404 status if token is invalid' do
+      user = User.create(valid_user)
+      content = user.likeable_contents.create(valid_content)
+
+      get :create_like, params: {identifier: content.identifier, api_token: 'invalid-token'}
+
+      payload = JSON.parse response.body
+      expect(response.status).to eq 404
+      expect(payload['error']).to eq 'Invalid Request Data'
+    end
+
+    it 'returns 404 status user is invalid' do
+      user = User.create(valid_user)
+      content = user.likeable_contents.create(valid_content)
+
+      get :create_like, params: {identifier: 'foo', api_token: user.api_token}
 
       payload = JSON.parse response.body
       expect(response.status).to eq 404

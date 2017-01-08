@@ -22,4 +22,8 @@ class LikeableContent
   def generate_uuid
     SecureRandom.uuid
   end
+
+  def self.find_by_identifier(unique_identifier)
+    where(identifier: unique_identifier).first
+  end
 end
