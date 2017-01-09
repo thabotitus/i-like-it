@@ -1,8 +1,9 @@
 language: ruby
 rvm:
- - 2.3.0
- # - jruby
- # - rbx-2
-# uncomment and edit the following line if your project needs to run something other than `rake`:
+- 2.3.0
 script: bundle exec rspec spec
 services: mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: xcroEDPXu4GdNA8ZF9aTqzkJ1LRbEoXzZO3qp5whTlK2SpykW/5somaWs8es2iNAG3dqR5ZSrSlyR/JZjreOj1DTEfTohKR04XV4as1jzJm1W8RbcG8jOdMwojBqGwIBH2nUhLnm20krRj/U4ejvgdjBaZRXpddhGQglOjuKUmbQHJqhF82AAv97sJOcZjezMhHWMbONu9s6g1JMyC7g1KY6FkDNB1DFD8zCi9TLeLZaB7Q2QojJSWHmO8HmXQrRYlT7mYqHkE8DWYc7/1KEhlMwh/ymVHrn6oijOWJQOYzcEfrWG6GOupLwn2cgA4t1So7toZ8irWjPuSNiCuS0QsG+oYn2kwr6BV0imgm60VhHRnxGpIb9+9DbpzTILHCQdQPx3+DImwizB6WP7PBAKV4+eCknpEA5KsigzsIxVmPz0P2E3ViztuPKCwP7pTCGy69P/MJSZ8OOWuhF9ruvjk4VJW2qyU8Op5Szc7K81QC5NKRDwe6IdvKsWDHUYY5P3gL57s/jWH9KtwPVn9K8W65GcJEMjgOH6kr+Ni2VH5JaE6R8x9Et7uc3qelYRHC1B7kBmRpGkSIxs8LlfVDEJShuaTF4iWJMkN2+wEUhHNkg7qF90I3thMskfQxP9Ep6hXYAV4q3j213CDhEv+St5Q2fBR1cmS0HkxtRWe3z3ws=
