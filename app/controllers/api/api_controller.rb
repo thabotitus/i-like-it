@@ -1,5 +1,7 @@
 class Api::ApiController < ApplicationController
   before_action :authenticate_token
+  protect_from_forgery with: :null_session
+
 
   def total_likes
     begin

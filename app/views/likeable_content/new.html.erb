@@ -1,1 +1,18 @@
-new.html.erb
+<h1>Add New Content</h1>
+
+<%= form_for :likeable_content, url: likeable_content_index_path do |f| %>
+
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_field :description, autofocus: true %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Create" %>
+  </div>
+<% end %>

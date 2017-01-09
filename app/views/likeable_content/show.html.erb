@@ -1,1 +1,7 @@
-<h1>A Piece of Content</h1>
+<h1><%= @content.title %></h1>
+<ul>
+  <li><%= link_to 'Back to Dashboard', dashboard_index_path %></li>
+</ul>
+<p>Description: <%= @content.description %></p>
+<p>Identifier: <%= @content.identifier %></p>
+<p>Likes: <%= @content.likes.count %></p>
